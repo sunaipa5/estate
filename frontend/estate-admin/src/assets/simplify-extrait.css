@@ -44,3 +44,23 @@ margin-left: 5px;
 textarea{
     resize: none;
 }
+
+.container{
+    padding: 0px 10px; 
+    margin: 4px 4px;
+}
+
+@media (max-width: 576px) {
+
+    .container {
+        min-width:90vw !important;
+        max-width:90vw !important;
+    }
+
+    .btn-x{
+        min-width:100px !important;
+        max-width:30vw !important;
+    }
+    
+
+}

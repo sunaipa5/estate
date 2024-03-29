@@ -1,30 +1,43 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"estate/jager"
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
-func startServer() {
-	var app = fiber.New()
+func runServer() {
+	app := chi.NewRouter()
+	app.Use(middleware.Logger)
 
-	//CORS allow origin ! Clear for stable build !
-	app.Use(cors.New())
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	servdir := getFrontendDist()
+	fs := http.FileServer(http.Dir(servdir))
+	app.Handle("/assets/*", fs)
 
-	//Call static files
-	foAdmin := "./frontend/estate-admin/dist/index.html"
-
-	app.Static("/assets", "./frontend/estate-admin/dist/assets")
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendFile(foAdmin)
+	app.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, servdir+"index.html")
 	})
-	app.Get("/login", func(c *fiber.Ctx) error {
-		return c.SendFile(foAdmin)
+
+	app.Get("/ilanlar", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, servdir+"index.html")
 	})
-	app.Listen(":3000")
+
+	app.Get("/getnotice", func(w http.ResponseWriter, r *http.Request) {
+		jager.JSON(w, getNotices())
+	})
+
+	app.Post("/addnotice", func(w http.ResponseWriter, r *http.Request) {
+		
+		jsonData, err := jager.Read(w, r)
+		if err != nil {
+			jager.StringJSON(w,`{"message":"Error"}`)
+		}
+		jager.StringJSON(w,`{"message":"Success"}`)
+
+		addnotice(jsonData)
+	})
+
+	http.ListenAndServe(getListenAdress(), app)
 }

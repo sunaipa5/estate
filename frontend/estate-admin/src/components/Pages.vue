@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container col-lg">
     <div class="btn-x hover fll">
       <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
         class="bi bi-file-earmark-plus-fill" viewBox="0 0 16 16">
@@ -35,32 +35,122 @@
   </div>
   <div class="col col-lg">
     <h2>Yeni ilan ekle</h2>
-    <span>İlan adı</span>
-    <input type="text" class="fit" placeholder="İlan adı">
-    <span>Adres</span>
-    <textarea type="text" class="fit" placeholder="Bombay Sapphire Cad. Sandre Politan / Shizen-United"></textarea>
-    <div>
-      <div class="sz-20 fll">
-        <span>Oda sayısı</span>
-        <input type="text" class="fit" placeholder="3+1">
+    <span>İlan başlığı</span>
+    <form autocomplete="off" @submit.prevent="addNotice">
+
+      <input type="text" class="fit" placeholder="Bombay Sappire Rezidansları 5.Etap'da daire" ref="title">
+      <span>Adres</span>
+      <textarea type="text" class="fit" placeholder="Bombay Sapphire Cad. Sandre Politan / Shizen-United"
+        ref="address"></textarea>
+      <div>
+        <div class="sz-20 fll">
+          <span>Oda sayısı</span>
+          <input type="text" class="fit" placeholder="3+1" ref="roomNumber">
+        </div>
+        <div class="sz-20 fll mgl">
+          <span>Metrekare</span>
+          <input type="number" class="fit" placeholder="100" ref="centare">
+        </div>
+        <div class="sz-20 fll mgl">
+          <span>Bulunduğu kat</span>
+          <input type="number" class="fit" placeholder="2" ref="floor">
+        </div>
+        <div class="sz-20 fll mgl">
+          <span>Binadaki kat sayısı</span>
+          <input type="number" class="fit" placeholder="8" ref="floorNumber">
+        </div>
       </div>
-      <div class="sz-20 fll mgl">
-        <span>Metrekare</span>
-        <input type="number" class="fit" placeholder="100">
+      <div class="row fit">
+        <span class="fll">Açıklama</span>
+        <textarea name="" id="" cols="30" rows="10" class="fit" placeholder="Açıklama" ref="description"></textarea>
       </div>
-      <div class="sz-20 fll mgl">
-        <span>Bulunduğu kat</span>
-        <input type="number" class="fit" placeholder="2">
-      </div>
-      <div class="sz-20 fll mgl">
-        <span>Binadaki kat sayısı</span>
-        <input type="number" class="fit" placeholder="8">
-      </div>
-    </div>
-    <div class="row fit">
-    <span class="fll">Açıklama</span>
-    <textarea name="" id="" cols="30" rows="10" class="fit" placeholder="Açıklama"></textarea>
-    </div>
- 
+   <button type="submit" class="btn-md btb flr">Submit</button>
+    </form>
+  </div>
+  <br>
+  <div class="col col-lg">
+    <h2>GetDB</h2>
+    <p class="fll">{{ message }}</p>
+    <table class="center">
+      <tbody>
+        <tr>
+          <th>Başlık</th>
+          <th>Adres</th>
+          <th>Oda sayısı</th>
+          <th>Metrekare</th>
+          <th>Bulunduğu kat</th>
+          <th>Binadaki kat sayısı</th>
+          <th>Açıklama</th>
+        </tr>
+
+        <tr v-for="notice in notices">
+          <td>{{ notice.Title }}</td>
+          <td>{{ notice.Address }}</td>
+          <td>{{ notice.RoomNumber }}</td>
+          <td>{{ notice.Centare }}</td>
+          <td>{{ notice.Floor }}</td>
+          <td>{{ notice.Floor_number }}</td>
+          <td>{{ notice.Description }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn-md btb" @click="getDB()">GET</button>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      notices: []
+    }
+  },
+  methods: {
+    addNotice() {
+      const title = this.$refs.title.value;
+      const address = this.$refs.address.value;
+      const roomNumber = this.$refs.roomNumber.value;
+      const centare = this.$refs.centare.value;
+      const floor = this.$refs.floor.value;
+      const floorNumber = this.$refs.floorNumber.value;
+      const description = this.$refs.description.value;
+
+
+      const postData = {
+        Title: title,
+        Address: address,
+        Room_number: roomNumber,
+        Centare: parseInt(centare),
+        Floor: parseInt(floor),
+        Floor_number: parseInt(floorNumber),
+        Description: description,
+      };
+
+      axios.post('/addnotice',postData)
+      .then(response => {
+        console.log(response.data.message)
+        alert(response.data.message)
+      })
+      .catch(error =>{
+        console.log("Post Error:", error);
+      })
+    },
+    getDB() {
+      axios.get('/getnotice')
+        .then(response => {
+          if (response != undefined) {
+            console.log(response.data)
+            this.notices = response.data;
+          }
+
+        })
+        .catch(error => {
+          console.error('Get Error:', error);
+        });
+    }
+
+  },
+}
+</script>
