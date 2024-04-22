@@ -32,9 +32,9 @@ func runServer() {
 		
 		jsonData, err := jager.Read(w, r)
 		if err != nil {
-			jager.StringJSON(w,`{"message":"Error"}`)
+			w.Write(jager.StringJSON(`{"message":"Error"}`))
 		}
-		jager.StringJSON(w,`{"message":"Success"}`)
+		w.Write(jager.StringJSON(`{"message":"Success"}`))
 
 		addnotice(jsonData)
 	})

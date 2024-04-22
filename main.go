@@ -6,5 +6,5 @@ import(
 
 func main(){
 	fmt.Println("Estate server running...")
-	runServer()
+	router()
 }

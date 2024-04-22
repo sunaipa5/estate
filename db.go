@@ -16,7 +16,6 @@ func connectDb() (*gorm.DB, error) {
 	return db, err
 }
 
-
 func closeDb(db *gorm.DB) {
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -27,9 +26,9 @@ func closeDb(db *gorm.DB) {
 
 //Requests
 
-type testTable struct {
-	Username string
-	Password string
+type users struct {
+	Username string `json:"Username"`
+	Password string `json:"Password"`
 }
 
 func getUsers() []byte {
@@ -38,18 +37,39 @@ func getUsers() []byte {
 		fmt.Println("Error:", err)
 	}
 
-	var users []testTable
-	if err := db.Table("testTable").Find(&users).Error; err != nil {
+	var getusers []users
+	if err := db.Table("users").Find(&getusers).Error; err != nil {
 		fmt.Println("Error: Cannot get table")
 	}
 
-	jsonData, err := json.Marshal(users)
+	jsonData, err := json.Marshal(getusers)
 	if err != nil {
 		fmt.Println("Error: Cannot create JSON")
 	}
 	closeDb(db)
 
 	return jsonData
+}
+
+func checkUser(userInfo []byte) (string, bool, string) {
+	db, err := connectDb()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	var user users
+	if err := json.Unmarshal(userInfo, &user); err != nil {
+		fmt.Println("JSON decode hatası:", err)
+		return "Decode error!", false, ""
+	}
+	
+	result := db.Table("users").Where("username = ? AND password = ?", user.Username, user.Password).First(&user)
+	if result.RowsAffected == 0 {
+		return "User not found!", false, ""
+	} else {
+		return "User found successfully", true, user.Username
+	}
+
 }
 
 type Notices struct {
@@ -85,10 +105,10 @@ func addnotice(jsonData []byte) error {
 
 	}
 	var notice Notices
-    if err := json.Unmarshal(jsonData, &notice); err != nil {
-        fmt.Println("JSON decode hatası:", err)
-        return err
-    }
+	if err := json.Unmarshal(jsonData, &notice); err != nil {
+		fmt.Println("JSON decode hatası:", err)
+		return err
+	}
 
 	fmt.Println(notice)
 	if err := db.Table("notices").Create(&notice).Error; err != nil {

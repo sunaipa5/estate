@@ -3,6 +3,7 @@ package jager
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -39,18 +40,20 @@ func Read(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func StringJSON(w http.ResponseWriter, jsonString string) error{
-	var jsonData map[string]interface{}
+func StringJSON(jsonString string) ([]byte) {
+    var jsonData interface{}
 
-	err := json.Unmarshal([]byte(jsonString), &jsonData)
-	if err != nil {
-		return err
-	}
+    err := json.Unmarshal([]byte(jsonString), &jsonData)
+    if err != nil {
+		log.Println("Unmarshal // Failed to convert JSON")
+        return nil
+    }
 
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(jsonData)
-	if err != nil {
-		return err
-	}
-	return nil
+    encodedJSON, err := json.Marshal(jsonData)
+    if err != nil {
+		log.Println("Marshal // Failed to convert JSON")
+        return nil
+    }
+    return encodedJSON
 }
+
