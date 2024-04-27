@@ -31,12 +31,6 @@ func JSON(w http.ResponseWriter, getJson interface{}) error{
 	return nil
 }
 
-func Write(w http.ResponseWriter, getJson []byte) error{
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(getJson)
-	return nil
-}
-
 func Read(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -46,22 +40,20 @@ func Read(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func StringJSON(jsonString string) []byte {
+func StringJSON(jsonString string) ([]byte) {
     var jsonData interface{}
 
     err := json.Unmarshal([]byte(jsonString), &jsonData)
     if err != nil {
-        log.Println("Unmarshal // Failed to convert JSON")
+		log.Println("Unmarshal // Failed to convert JSON")
         return nil
     }
 
     encodedJSON, err := json.Marshal(jsonData)
     if err != nil {
-        log.Println("Marshal // Failed to convert JSON")
+		log.Println("Marshal // Failed to convert JSON")
         return nil
     }
-
     return encodedJSON
 }
-
 

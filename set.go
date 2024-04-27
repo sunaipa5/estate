@@ -1,20 +1,19 @@
 package main
 
-func getFrontendDist() string{
-return "./frontend/estate-admin/dist/"
+func getFrontendDist() string {
+	return "./frontend/estate-admin/dist/"
 }
 
 func getDbVariables() (string, string, string, string) {
 	dbhost := "127.0.0.1:3306"
 	dbname := "estate"
-	dbuser := "localdev"
-	dbpass := "localdev"
-    return dbhost, dbname, dbuser, dbpass
+	dbuser := "dbadmin"
+	dbpass := "dbadmin"
+	return dbhost, dbname, dbuser, dbpass
 }
 
-func getListenAdress() string{
-//ip:port
-address := ":3000"
-return address
+func getListenAdress() string {
+	//ip:port
+	address := ":3000"
+	return address
 }
-

@@ -64,7 +64,7 @@
         <span class="fll">Açıklama</span>
         <textarea name="" id="" cols="30" rows="10" class="fit" placeholder="Açıklama" ref="description"></textarea>
       </div>
-      <button type="submit" class="btn-md btb flr">Submit</button>
+   <button type="submit" class="btn-md btb flr">Submit</button>
     </form>
   </div>
   <br>
@@ -104,27 +104,10 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      notices: [],
-      accessToken: null
+      notices: []
     }
   },
-  created() {
-    this.getaccesstoken();
-    setInterval(this.getaccesstoken, 28000);
-  },
   methods: {
-    getaccesstoken () {
-      console.log("access token succesfully getted")
-      axios.get('/getaccesstoken')
-        .then(response => {
-          this.accessToken = response.data.token
-          alert(this.accessToken)
-        })
-        .catch(error => {
-          console.log("Post Error:", error);
-        })
-
-    },
     addNotice() {
       const title = this.$refs.title.value;
       const address = this.$refs.address.value;
@@ -145,21 +128,17 @@ export default {
         Description: description,
       };
 
-      axios.post('/addnotice', postData)
-        .then(response => {
-          console.log(response.data.message)
-          alert(response.data.message)
-        })
-        .catch(error => {
-          console.log("Post Error:", error);
-        })
+      axios.post('/addnotice',postData)
+      .then(response => {
+        console.log(response.data.message)
+        alert(response.data.message)
+      })
+      .catch(error =>{
+        console.log("Post Error:", error);
+      })
     },
     getDB() {
-      axios.get('/getnotice', {
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-        }
-      })
+      axios.get('/getnotice')
         .then(response => {
           if (response != undefined) {
             console.log(response.data)

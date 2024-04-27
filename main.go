@@ -5,6 +5,6 @@ import(
 )
 
 func main(){
-	fmt.Println("Estate server running...")
+	fmt.Println("Estate server running on:",getListenAdress())
 	router()
 }
