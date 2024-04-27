@@ -51,7 +51,7 @@ func getUsers() []byte {
 	return jsonData
 }
 
-func checkUser(userInfo []byte) (string, bool, string) {
+func checkUser(userInfo []byte) (int, bool, string) {
 	db, err := connectDb()
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -60,14 +60,14 @@ func checkUser(userInfo []byte) (string, bool, string) {
 	var user users
 	if err := json.Unmarshal(userInfo, &user); err != nil {
 		fmt.Println("JSON decode hatası:", err)
-		return "Decode error!", false, ""
+		return 404, false, ""
 	}
 	
 	result := db.Table("users").Where("username = ? AND password = ?", user.Username, user.Password).First(&user)
 	if result.RowsAffected == 0 {
-		return "User not found!", false, ""
+		return 404, false, ""
 	} else {
-		return "User found successfully", true, user.Username
+		return 200, true, user.Username
 	}
 
 }
