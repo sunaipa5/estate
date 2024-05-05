@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// Database processes
 func connectDb() (*gorm.DB, error) {
 	dbhost, dbname, dbuser, dbpass := getDbVariables()
 	dsn := dbuser + ":" + dbpass + "@tcp(" + dbhost + ")/" + dbname + "?charset=utf8mb4&parseTime=True&loc=Local"
@@ -23,8 +22,6 @@ func closeDb(db *gorm.DB) {
 	}
 	defer sqlDB.Close()
 }
-
-//Requests
 
 type users struct {
 	Username string `json:"Username"`
@@ -51,7 +48,7 @@ func getUsers() []byte {
 	return jsonData
 }
 
-func checkUser(userInfo []byte) (string, bool, string) {
+func checkUser(userInfo []byte) (int, bool, string) {
 	db, err := connectDb()
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -60,14 +57,14 @@ func checkUser(userInfo []byte) (string, bool, string) {
 	var user users
 	if err := json.Unmarshal(userInfo, &user); err != nil {
 		fmt.Println("JSON decode hatası:", err)
-		return "Decode error!", false, ""
+		return 404, false, ""
 	}
-	
+
 	result := db.Table("users").Where("username = ? AND password = ?", user.Username, user.Password).First(&user)
 	if result.RowsAffected == 0 {
-		return "User not found!", false, ""
+		return 404, false, ""
 	} else {
-		return "User found successfully", true, user.Username
+		return 200, true, user.Username
 	}
 
 }
@@ -80,25 +77,45 @@ type Notices struct {
 	Floor        int    `json:"Floor"`
 	Floor_number int    `json:"Floor_number"`
 	Description  string `json:"Description"`
+	Page_name    string `json:"Page_name"`
+	File_names    string `json:"File_names"`
 }
 
-func getNotices() []Notices {
+type Response struct {
+	TotalCount int        `json:"total_count"`
+	Notices []Notices `json:"notices"`
+}
+
+func getNotices(pageNumber int) Response {
 	db, err := connectDb()
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
 
-	var notices []Notices
-	if err := db.Table("notices").Find(&notices).Error; err != nil {
-		fmt.Println("Error: Cannot get table")
+	if pageNumber != 0 {
+		offset := (pageNumber - 1)*4	
+		fmt.Println("of:", offset)
+
+		var count int64
+		var notices []Notices
+		if err := db.Table("notices").Count(&count).Offset(offset).Limit(4).Find(&notices).Error; err != nil {
+			fmt.Println("Error: Cannot get table")
+			closeDb(db)
+		}
 		closeDb(db)
+
+		jsonData := Response{
+			TotalCount: int(count),
+			Notices: notices,
+		}
+
+
+		return jsonData
 	}
-	closeDb(db)
-	return notices
+   return Response{}
 }
 
 func addnotice(jsonData []byte) error {
-	fmt.Println("runningxa")
 	db, err := connectDb()
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -117,4 +134,21 @@ func addnotice(jsonData []byte) error {
 
 	closeDb(db)
 	return nil
+}
+
+func getNoticePage(pageName string) []byte {
+	db, err := connectDb()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	var notices []Notices
+	if err := db.Table("notices").Where("page_name = ?", pageName).First(&notices).Error; err != nil {
+		fmt.Println("Error: Cannot get table")
+		closeDb(db)
+	}
+
+	closeDb(db)
+	jsonData, _ := json.Marshal(notices)
+	return jsonData
 }
