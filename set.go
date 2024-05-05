@@ -1,7 +1,7 @@
 package main
 
 func getFrontendDist() string {
-	return "./frontend/estate-admin/dist/"
+	return "./frontend/dist/"
 }
 
 func getDbVariables() (string, string, string, string) {

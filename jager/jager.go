@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+
 )
 
 /*
@@ -31,6 +32,11 @@ func JSON(w http.ResponseWriter, getJson interface{}) error{
 	return nil
 }
 
+func Write(w http.ResponseWriter, getJson []byte){
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(getJson)
+}
+
 func Read(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -40,20 +46,35 @@ func Read(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func StringJSON(jsonString string) ([]byte) {
-    var jsonData interface{}
+func StringJSON(w http.ResponseWriter, input string){
+	var jsonMap map[string]interface{}
+	err := json.Unmarshal([]byte(input), &jsonMap)
+	if err != nil {
+       log.Println("JAGER ERROR:",err)
+	}
 
-    err := json.Unmarshal([]byte(jsonString), &jsonData)
-    if err != nil {
-		log.Println("Unmarshal // Failed to convert JSON")
-        return nil
-    }
+	jsonData, err := json.Marshal(jsonMap)
+	if err != nil {
+		log.Println("JAGER ERROR:",err)
+	}
 
-    encodedJSON, err := json.Marshal(jsonData)
-    if err != nil {
-		log.Println("Marshal // Failed to convert JSON")
-        return nil
-    }
-    return encodedJSON
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
 }
 
+func IsJSON(data []byte) bool {
+	var js json.RawMessage
+	return json.Unmarshal(data, &js) == nil
+}
+
+
+func MapJSON(w http.ResponseWriter, data map[string]interface{}) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}

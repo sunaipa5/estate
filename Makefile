@@ -9,7 +9,7 @@ NOT_COPY_FOLDERS := frontend .git .OLD .release .backup
 NOT_DELETE_FILES := set.go
 NOT_DELETE_FOLDERS :=
 
-FRONTEND_FOLDER := frontend/estate-admin/dist
+FRONTEND_FOLDER := frontend/dist
 
 #ANSI Color
 GREEN := "\033[0;32m"
