@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top:-4px;">
     <div class="imgAreax">
-      <img src="../../assets/house2.webp" alt class="img" />
+      <img src="../../assets/house.webp" alt class="img" />
       <div class="imgCenter">
       
       </div>
