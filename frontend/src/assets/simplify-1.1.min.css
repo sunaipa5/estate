@@ -92,14 +92,14 @@ input {
 }
 
 .dark input:not([type="submit"]),
-.dark textarea {
+.dark textarea, .dark select{
     background-color: #111;
     color: #fff;
     border: 1px solid#333
 }
 
 .dark input:focus,
-textarea:focus {
+textarea:focus, .dark select {
     border-color: #555
 }
 
@@ -126,7 +126,7 @@ textarea:focus {
     color: #999
 }
 
-.dark .navbar li:hover {
+.dark .navbar li:hover, .dark .leftmen li:hover {
     border-radius: 7px;
     background-color: #222;
     transition: 0.5s
@@ -153,14 +153,14 @@ textarea:focus {
 }
 
 .light input:not([type="submit"]),
-.light textarea {
+.light textarea, .light select {
     background-color: #eee;
     color: #000;
     border: 1px solid#888
 }
 
 .light input:focus,
-textarea:focus {
+textarea:focus, .light select {
     border-color: #333
 }
 
@@ -179,7 +179,6 @@ textarea:focus {
 }
 
 .light footer {
-    background-color: #f4f5f6;
     border-top: 1px solid #d1d1d1
 }
 
@@ -189,7 +188,7 @@ textarea:focus {
     color: #111
 }
 
-.light .navbar li:hover {
+.light .navbar li:hover, .light .leftmen li:hover {
     border-radius: 7px;
     background-color: #d1d1d1;
     transition: 0.5s
@@ -206,7 +205,7 @@ textarea:focus {
 }
 
 input:not([type="submit"]),
-textarea {
+textarea, select {
     border-radius: 7px;
     height: auto;
     padding: 5px;
@@ -362,11 +361,11 @@ a {
     margin: 5px 0
 }
 
-.col-fluid {
+.col-fluidx {
     max-width: 100%
 }
 
-.col-fluidx {
+.col-fluid {
     width: 100%
 }
 
@@ -562,3 +561,4 @@ th {
     text-align: left;
     padding: 5px
 }
+

@@ -2,7 +2,7 @@
   <div>
     <div class="center loginForm">
       <div class="formArea">
-        <form @submit.prevent="loginRequest" class="col col-sm">
+        <form @submit.prevent="loginRequest" class="col col-smx">
           <div class="fomrh">
             <button class="tbtn" @click="changeTheme()" type="button">
               <svg
@@ -47,28 +47,22 @@
 </template>
  
 <style>
-.login {
-  float: left;
-  background: linear-gradient(120deg, #222, #333, #111);
-  height: 100vh;
-  width: 40vw;
-}
-
 .loginForm {
   height: 100vh;
   width: 60vw;
   justify-content: center;
+
 }
 
 .loginForm div {
   display: flex;
-
   align-items: center;
 }
 
 .formArea {
   justify-content: center;
-  height: 80vh;
+  height: 50vh;
+
 }
 
 .col {

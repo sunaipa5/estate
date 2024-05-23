@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import App from './Main.vue';
+import VueSplide from '@splidejs/vue-splide';
 
 import '../assets/simplify-1.1.min.css'
 import '../assets/simplify-extrait.css'
@@ -16,13 +17,22 @@ const routes = [
     }
   },
   {
-    path: '/ilanlar', component: () => import('./components/Notices.vue'),
+    path: '/ilanlar/:propertyStatus?/:propertyType?',
+    component: () => import('./components/Properties.vue'),
+    props: true,
+    meta: {
+      title: 'İlanlar',
+    },
+  },  
+  {
+    path: '/ilanlar',
+    component: () => import('./components/Properties.vue'),
     meta: {
       title: 'İlanlar',
     },
   },
   {
-    path: "/ilan/:pageName", component: () => import('./components/Notice.vue'), props: true,
+    path: "/ilan/:pageName", component: () => import('./components/Property.vue'), props: true,
     meta: {
       title: "İlan"
     },
@@ -35,6 +45,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  window.scrollTo(0, 0);
   document.title = to.meta.title;
   next();
 });
@@ -42,4 +53,5 @@ router.beforeEach((to, from, next) => {
 
 const app = createApp(App);
 app.use(router);
+app.use(VueSplide);
 app.mount('#app');
