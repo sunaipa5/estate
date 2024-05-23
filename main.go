@@ -1,10 +1,11 @@
 package main
 
-import(
-"fmt"
+import (
+	"estate/options"
+	"fmt"
 )
 
 func main(){
-	fmt.Println("Estate server running on:",getListenAdress())
+	fmt.Println("Estate server running on:",options.Port)
 	router()
 }
