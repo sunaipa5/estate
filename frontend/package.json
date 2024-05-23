@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@splidejs/vue-splide": "^0.6.12",
     "axios": "^1.6.8",
     "vue": "^3.4.21"
   },

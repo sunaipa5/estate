@@ -1,20 +1,126 @@
 <template>
-   <div class="container col-lg">
-      <div class="btn-x hover fll" @click="this.$router.push('/admin/ilan-ekle');">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="50"
-          height="50"
-          fill="currentColor"
-          class="bi bi-file-earmark-plus-fill"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0"
-          />
-        </svg>
-        <h3 style="padding-top: 10px">Yeni ilan ekle</h3>
+  <div>
+    <div class="center">
+      <div class="col tx-cen">
+        <h3>İstanbul</h3>
+        <h1>{{timeTurkey}}</h1>
       </div>
-     
+      <div class="col tx-cen">
+        <h3>Tokyo</h3>
+        <h1>{{timeTokyo}}</h1>
+      </div>
+      <div class="col tx-cen">
+        <h3>London</h3>
+        <h1>{{timeLondon}}</h1>
+      </div>
+      <div class="col tx-cen">
+        <h3>Florida</h3>
+        <h1>{{timeFlorida}}</h1>
+      </div>
     </div>
+    <div>
+      <h2>En son eklenenler</h2>
+      <div class="container">
+        <div
+          class="card ca-md hover"
+          v-for="property in properties"
+          :key="property.id"
+          @click="this.$router.push('/admin/ilan/'+property.Page_name);"
+        >
+          <div class="inner">
+            <img :src="'/img/' + property.File_names.split(' ')[0]" />
+            <div class="card-col">
+              <p>{{ property.Title }}</p>
+              <p>{{ property.Centare }} m2 | {{ property.Room_number }}</p>
+              <p>{{ property.Address }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
+
+<script>
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      properties: [],
+    };
+  },
+  setup() {
+    const timeFlorida = ref("");
+    const timeTurkey = ref("");
+    const timeTokyo = ref("");
+    const timeLondon = ref("");
+
+    const locations = {
+      Florida: -4,
+      Turkey: 3,
+      Tokyo: 9,
+      London: 1,
+    };
+
+    const updateTime = () => {
+      const now = new Date();
+
+      const formatTime = (hours, minutes) => {
+        return `${hours.toString().padStart(2, "0")}:${minutes
+          .toString()
+          .padStart(2, "0")}`;
+      };
+
+      for (const [location, offset] of Object.entries(locations)) {
+        const localTime = new Date(now.getTime() + offset * 3600 * 1000);
+        const hours = localTime.getUTCHours();
+        const minutes = localTime.getUTCMinutes();
+        const formattedTime = formatTime(hours, minutes);
+
+        switch (location) {
+          case "Florida":
+            timeFlorida.value = formattedTime;
+            break;
+          case "Turkey":
+            timeTurkey.value = formattedTime;
+            break;
+          case "Tokyo":
+            timeTokyo.value = formattedTime;
+            break;
+          case "London":
+            timeLondon.value = formattedTime;
+            break;
+        }
+      }
+    };
+
+    onMounted(() => {
+      updateTime();
+      setInterval(updateTime, 1000);
+    });
+
+    return { timeFlorida, timeTurkey, timeTokyo, timeLondon };
+  },
+  created() {
+    this.getProperties();
+  },
+  methods: {
+    getProperties() {
+      axios
+        .get("/api/getProperties/1/all/all")
+        .then((response) => {
+          if (response != undefined) {
+            console.log(response.data);
+            this.properties = response.data.properties;
+          }
+        })
+        .catch((error) => {
+          console.error("Get Error:", error);
+        });
+    },
+  },
+};
+</script>
