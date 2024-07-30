@@ -114,7 +114,7 @@ export default {
         .then((response) => {
           if (response != undefined) {
             console.log(response.data);
-            this.properties = response.data.properties;
+            this.properties = response.data.properties.slice(0,4);
           }
         })
         .catch((error) => {

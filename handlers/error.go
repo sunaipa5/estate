@@ -1,26 +1,29 @@
 package handlers
 
 import (
-	"net/http"
 	"html/template"
+	"net/http"
 )
 
-func SendErrorPage(w http.ResponseWriter, code int, name string) {
-	w.WriteHeader(code)
-	tmpl, err := template.ParseFiles("error.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+func SendErrorPage(statusCode int, statusText string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(statusCode)
+		tmpl, err := template.ParseFiles("error.html")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-	data := map[string]interface{}{
-		"Code": code,
-		"Name": name,
-	}
+		data := map[string]interface{}{
+			"Code": statusCode,
+			"Name": statusText,
+		}
 
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 }
+

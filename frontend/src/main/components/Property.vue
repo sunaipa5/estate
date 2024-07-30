@@ -16,9 +16,32 @@
       </div>
       <br />
       <div class="col col-xxl">
-        <pre>
-        {{property.Description}}
-      </pre>
+        <h3>İlan Hakkında</h3>
+        <b class="fll">Metrekare:</b>
+        <p class="fll">{{ property.Centare }} m2</p>
+        <br>
+        <b class="fll">Oda Sayısı:</b>
+        <p class="fll">{{ property.Room_number }}</p>
+        <br>
+        <b class="fll">Binadaki kat sayısı:</b>
+        <p class="fll">{{ property.Floor_number }}</p>
+        <br>
+        <b class="fll">Bulunduğu kat:</b>
+        <p class="fll">{{ property.Floor }}</p>
+        <br>
+        <b class="fll">Tipi:</b>
+        <p class="fll">{{ property.Property_type }}</p>
+        <br>
+        <b class="fll">Durumu:</b>
+        <p class="fll">{{ property.Property_status }}</p>
+        <br>
+        <b class="fll">Adres:</b>
+        <p class="fll">{{ property.Address }}</p>
+      </div>
+      <br>
+      <div class="col col-xxl">
+        <h3>Açıklama</h3>
+        <pre>{{ property.Description }}</pre>
       </div>
     </div>
   </div>
@@ -48,7 +71,6 @@ export default {
       rewind: true,
       type: "loop",
       autoplay: true,
-      padding: "8rem",
       gap: "40px",
     };
 
@@ -88,6 +110,7 @@ export default {
   height: 50vh;
   border-radius: 7px;
   background: #ececec;
+  overflow: hidden;
 }
 
 .dark .splide__slide {
@@ -99,7 +122,7 @@ export default {
 }
 
 pre {
-    white-space: pre-wrap;
-    margin-left: 0;
+  white-space: pre-wrap;
+  margin-left: 0;
 }
 </style>

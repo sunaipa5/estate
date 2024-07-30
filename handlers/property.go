@@ -21,6 +21,21 @@ func UpdateProperty(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func DeleteProperty(w http.ResponseWriter, r *http.Request) {
+	jsonData, err := jager.Read(w, r)
+	if err != nil {
+		w.WriteHeader(400)
+	} else {
+		err = database.DeleteProperty(jsonData)
+		if err != nil {
+			w.WriteHeader(400)
+		} else {
+			w.WriteHeader(200)
+		}
+	}
+}
+
+
 func GetProperty(w http.ResponseWriter, r *http.Request) {
 	jsonData, err := jager.Read(w, r)
 	if err != nil {

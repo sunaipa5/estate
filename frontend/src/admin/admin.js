@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import App from './Admin.vue';
+import axios from "axios";
 
 import '../assets/simplify-1.1.min.css'
 import '../assets/simplify-extrait.css'
@@ -44,7 +45,6 @@ router.beforeEach((to, from, next) => {
   document.title = to.meta.title;
   next();
 });
-
 
 const app = createApp(App);
 app.use(router);

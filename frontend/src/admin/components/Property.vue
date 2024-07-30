@@ -1,5 +1,10 @@
 <template>
   <div>
+    <calert v-if="alertVisible" @close="closeAlert" class="col-lg">
+        <h3>İlanı silmek istediğinize eminmisiniz ?</h3>
+        <button class="btb btn-sm flr" @click="this.closeAlert()" style="margin-left:5px;">İptal</button>
+        <button class="btn-sm btr flr" @click="this.deleteProperty()">Sil</button>
+    </calert>
     <h2>İlanı düzenle</h2>
     <div v-for="notice in notices" :key="notice.id">
       <div class="col col-lg container">
@@ -11,6 +16,7 @@
       </div>
       <br />
       <div class="col col-lg">
+        <button class="btr btn-sm" @click="this.showAlert()">İlanı Kaldır</button>
         <form autocomplete="off" @submit.prevent="updateProperty">
           <input class="fit" type="file" multiple id="fileInput" @change="onFileChange" accept="image/*" />
           <span>
@@ -70,7 +76,7 @@
             <textarea cols="30" rows="10" class="fit" placeholder="Açıklama" id="description"
               :value="notice.Description"></textarea>
           </div>
-          <button type="submit" class="btn-md btb flr">Submit</button>
+          <button type="submit" class="btn-md btb flr">Güncelle</button>
         </form>
       </div>
     </div>
@@ -79,14 +85,19 @@
 
 <script>
 import axios from "axios";
+import Calert from "./Calert.vue";
 
 export default {
   props: ["pageName"],
+  components: {
+    Calert,
+  },
   data() {
     return {
       notices: [],
       accessToken: null,
       propertyId: null,
+      alertVisible: false,
     };
   },
   created() {
@@ -95,6 +106,12 @@ export default {
     this.getPropertyDetails();
   },
   methods: {
+    showAlert() {
+      this.alertVisible = true;
+    },
+    closeAlert() {
+      this.alertVisible = false;
+    },
     getaccesstoken() {
       axios
         .get("/admin/getaccesstoken")
@@ -172,7 +189,7 @@ export default {
 
       const postData = {
         Id: id,
-        Title: title.value,
+        Title: title,
         Address: address,
         Room_number: roomNumber,
         Centare: parseInt(centare),
@@ -193,12 +210,31 @@ export default {
         })
         .then((response) => {
           console.log(response.data.message);
-          alert(response.data.message);
+          alert("İlan başarılı şekilde güncellendi");
         })
         .catch((error) => {
           console.log("Post Error:", error);
         });
     },
+    deleteProperty() {
+      const postData = {
+        Id: this.propertyId,
+      };
+      axios
+        .post("/api/deleteProperty", postData, {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        })
+        .then((response) => {
+          console.log(response.data.message);
+          alert("İlan Başarılı bir şekilde silindi");
+          this.$router.push('/admin/');
+        })
+        .catch((error) => {
+          console.log("Post Error:", error);
+        });
+    }
   },
 };
 </script>

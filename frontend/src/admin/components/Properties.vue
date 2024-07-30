@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="container">
-      <div class="card ca-md hover" v-for="notice in notices" :key="notice.id" @click="this.$router.push('/admin/ilan/'+notice.Page_name);">
+      <div class="card ca-md hover" v-for="notice in notices" :key="notice.id"
+        @click="this.$router.push('/admin/ilan/' + notice.Page_name);">
         <div class="inner">
           <img :src="'/img/' + notice.File_names.split(' ')[0]" alt="Resim">
           <div class="card-col">
@@ -13,12 +14,7 @@
       </div>
     </div>
     <ul class="pageNumberArea center">
-      <li
-        @click="changePage(page)"
-        :class="{ active: currentPage === page }"
-        v-for="page in totalPages"
-        :key="page"
-      >
+      <li @click="changePage(page)" :class="{ active: currentPage === page }" v-for="page in totalPages" :key="page" v-show="totalPages > 1">
         {{ page }}
       </li>
     </ul>
@@ -42,12 +38,12 @@ export default {
   methods: {
     getNotices(pageNumber) {
       axios
-        .get("/api/getProperties/" + pageNumber+"/all/all")
+        .get("/api/getProperties/" + pageNumber + "/all/all")
         .then((response) => {
           if (response != undefined) {
             console.log(response.data);
             this.notices = response.data.properties;
-            this.totalPages = Math.ceil(response.data.total_count / 4);
+            this.totalPages = Math.ceil(response.data.total_count / 20);
           }
         })
         .catch((error) => {

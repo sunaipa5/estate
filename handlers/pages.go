@@ -14,5 +14,8 @@ func PageAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 func PageLogin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
 	http.ServeFile(w, r, options.FrontendDist+"login.html")
 }

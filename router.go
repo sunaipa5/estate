@@ -1,11 +1,11 @@
 package main
 
 import (
+	"estate/auth"
 	"estate/database"
 	"estate/handlers"
 	"estate/jager"
 	"estate/options"
-	"estate/auth"
 	"net/http"
 	"strconv"
 	"github.com/go-chi/chi/v5"
@@ -18,20 +18,16 @@ func router() {
 	r.Use(middleware.Logger)
 	r.Use(options.CORS)
 
-	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		handlers.SendErrorPage(w, http.StatusNotFound, http.StatusText(http.StatusNotFound))
-	})
+	r.NotFound(handlers.SendErrorPage(http.StatusNotFound, http.StatusText(http.StatusNotFound)))
 
-	servdir := options.FrontendDist
-	fs := http.FileServer(http.Dir(servdir))
-	r.Handle("/assets/*", fs)
-	r.Handle("/img/*", http.FileServer(http.Dir("./")))
+	r.Get("/assets/*", handlers.AssetHandler(options.FrontendDist,"assets"))
+	r.Get("/img/*", handlers.AssetHandler("./","img"))
 
 	//Not token required routes
 	r.Group(func(r chi.Router) {
 		r.Get("/logout", auth.Logout)
 		r.Get("/login", handlers.PageLogin)
-		r.Post("/login",auth.Login)
+		r.Post("/login", auth.Login)
 
 		r.Get("/", handlers.PagePublic)
 		r.Get("/ilan/{page}", handlers.PagePublic)
@@ -45,7 +41,7 @@ func router() {
 		r.Use(auth.RefreshTokenMiddleware(auth.Refresh_token))
 
 		r.Get("/", handlers.PageAdmin)
-		
+
 		r.Get("/getaccesstoken", auth.SetAccessToken)
 		r.Get("/kullanicilar", handlers.PageAdmin)
 
@@ -91,11 +87,10 @@ func router() {
 
 			r.Post("/addProperty", handlers.SaveImages)
 			r.Post("/updateProperty", handlers.UpdateProperty)
+			r.Post("/deleteProperty", handlers.DeleteProperty)
 
 		})
 	})
 
 	http.ListenAndServe(options.Port, r)
 }
-
-

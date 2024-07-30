@@ -34,7 +34,7 @@ func GetProperties(pageNumber int, propertyStatus string, propertyType string) R
 	}
 
 	if pageNumber != 0 {
-		offset := (pageNumber - 1) * 4
+		offset := (pageNumber - 1) * 20
 		log.Println("of:", offset)
 
 		var whereConditions []string
@@ -57,7 +57,7 @@ func GetProperties(pageNumber int, propertyStatus string, propertyType string) R
 
 		var count int64
 		var properties []Properties
-		if err := query.Count(&count).Offset(offset).Limit(4).Find(&properties).Error; err != nil {
+		if err := query.Count(&count).Offset(offset).Limit(20).Find(&properties).Error; err != nil {
 			log.Println("Error: Cannot get table")
 		}
 		CloseDb(db)
@@ -133,3 +133,30 @@ func UpdateProperty(jsonData []byte) error {
 
 	return nil
 }
+
+func DeleteProperty(jsonData []byte) error {
+    db, err := ConnectDb()
+    if err != nil {
+        log.Println("Error:", err)
+        CloseDb(db)
+        return err
+    }
+
+    var property Properties
+    if err := json.Unmarshal(jsonData, &property); err != nil {
+        log.Println("JSON decode error:", err)
+        CloseDb(db)
+        return err
+    }
+
+    log.Println("Deleting property with ID:", property.Id)
+    if err := db.Table("properties").Where("id = ?", property.Id).Delete(&property).Error; err != nil {
+        log.Println("Error: Cannot delete property:", err)
+        CloseDb(db)
+        return err
+    }
+
+    CloseDb(db)
+    return nil
+}
+

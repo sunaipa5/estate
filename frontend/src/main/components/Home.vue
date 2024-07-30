@@ -3,7 +3,7 @@
     <div class="imgAreax">
       <img src="../../assets/house.webp" alt class="img" />
       <div class="imgCenter">
-      
+
       </div>
     </div>
     <div class="center">
@@ -26,25 +26,25 @@
     <div class="col-xxl center">
       <div class="container homeList">
         <div class="btn-x hover" @click="this.$router.push('/ilanlar/all/villa');">
-           <svg width="60" height="60" class="flr">
+          <svg width="60" height="60" class="flr">
             <use :xlink:href="svgLocation + '#villa'" />
           </svg>
           <h3>Villa</h3>
         </div>
         <div class="btn-x hover" @click="this.$router.push('/ilanlar/all/mustakil');">
-           <svg width="60" height="60" class="flr" >
+          <svg width="60" height="60" class="flr">
             <use :xlink:href="svgLocation + '#house'" />
           </svg>
           <h3>Müstakil</h3>
         </div>
         <div class="btn-x hover" @click="this.$router.push('/ilanlar/all/apartman');">
-          <svg width="60" height="60" class="flr" >
+          <svg width="60" height="60" class="flr">
             <use :xlink:href="svgLocation + '#apartment'" />
           </svg>
           <h3>Apartman</h3>
         </div>
         <div class="btn-x hover" @click="this.$router.push('/ilanlar/all/rezidans');">
-          <svg width="60" height="60" class="flr" >
+          <svg width="60" height="60" class="flr">
             <use :xlink:href="svgLocation + '#residence'" />
           </svg>
           <h3>Rezidans</h3>
@@ -55,12 +55,8 @@
     <div class="center col-xxl">
       <h2>Yeni İlanlar</h2>
       <div class="container">
-        <div
-          class="card ca-md hover"
-          v-for="notice in notices"
-          :key="notice.id"
-          @click="this.$router.push('/ilan/'+notice.Page_name);"
-        >
+        <div class="card ca-md hover" v-for="notice in notices" :key="notice.id"
+          @click="this.$router.push('/ilan/' + notice.Page_name);">
           <div class="inner">
             <img :src="'/img/' + notice.File_names.split(' ')[0]" alt="Resim" />
             <div class="card-col">
@@ -86,6 +82,7 @@
   left: 50%;
   transform: translate(-50%, -15%);
 }
+
 .imgAreax {
   max-width: 100vw;
   height: 60vh;
@@ -112,12 +109,12 @@
   padding: 15px 0px;
 }
 
-.searchZone select{
-  min-width:0px;
+.searchZone select {
+  min-width: 0px;
 }
 
 .light .searchZone {
-   background-color: #f4f5f6;
+  background-color: #f4f5f6;
   border-bottom: 1px solid #d1d1d1;
 }
 
@@ -126,7 +123,7 @@
   border-bottom: 1px solid #333;
 }
 
-.homeList .btn-x{
+.homeList .btn-x {
   width: 80px;
 }
 </style>
@@ -149,12 +146,12 @@ export default {
     console.log(svgLoc);
   },
   methods: {
-    searchProperty(){
+    searchProperty() {
       console.log("running")
-      this.$router.push('/ilanlar/'+this.clearTrChars(this.$refs.propertyStatus.value)+'/'+this.clearTrChars(this.$refs.propertyType.value))
-    
+      this.$router.push('/ilanlar/' + this.clearTrChars(this.$refs.propertyStatus.value) + '/' + this.clearTrChars(this.$refs.propertyType.value))
+
     },
-    clearTrChars(text){
+    clearTrChars(text) {
       const turkishChars = {
         ç: "c",
         ı: "i",
@@ -180,8 +177,7 @@ export default {
         .then((response) => {
           if (response != undefined) {
             console.log(response.data);
-            this.notices = response.data.properties;
-            this.totalPages = Math.ceil(response.data.total_count / 4);
+            this.notices = response.data.properties.slice(0, 4);;
           }
         })
         .catch((error) => {

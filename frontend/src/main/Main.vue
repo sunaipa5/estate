@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar">
       <div class="navl">
-        <h1>Estate</h1>
+        <h1 @click="this.$router.push('/');">Estate</h1>
       </div>
       <div class="navl">
         <ul>

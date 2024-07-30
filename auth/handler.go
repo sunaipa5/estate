@@ -13,15 +13,15 @@ import (
 func Logout(w http.ResponseWriter, r *http.Request) {
 	jwtToken, err := r.Cookie("jwt")
 	if err != nil {
-		handlers.SendErrorPage(w, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized))
+		handlers.SendErrorPage(http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized))(w, r)
 	} else {
-		log.Println("LOGOUT// TOKEN:", jwtToken)
 		hashToken := sha512.Sum512([]byte(jwtToken.Value))
 		hashTokenString := fmt.Sprintf("%x", hashToken)
 		check, err := database.DeleteToken(hashTokenString)
 		if check {
 			fmt.Println("logout runnning....")
-			//http.Redirect(w, r, "/login", 301)
+			RedirectLogin(w,r)
+
 		} else {
 			w.Write([]byte("Token can't delete!"))
 			log.Println("Token can't delete err:", err)
@@ -50,4 +50,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/admin", 304)
 	}
+}
+
+func RedirectLogin(w http.ResponseWriter, r *http.Request) {
+	htmlContent := "<script>window.location.replace('/login');</script>"
+
+	w.WriteHeader(401)
+	w.Write([]byte(htmlContent))
+
 }

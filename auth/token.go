@@ -5,10 +5,11 @@ import (
 	"estate/database"
 	"estate/jager"
 	"fmt"
-	"github.com/go-chi/jwtauth/v5"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/go-chi/jwtauth/v5"
 )
 
 var Access_token *jwtauth.JWTAuth
@@ -62,7 +63,7 @@ func RefreshTokenMiddleware(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler
 			jwtToken, err := r.Cookie("jwt")
 			if err != nil {
 				fmt.Println("TOKEN COOKIE NOT FOUND")
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				RedirectLogin(w,r)
 				return
 			}
 
@@ -70,13 +71,13 @@ func RefreshTokenMiddleware(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler
 			log.Println("err:", err, "token:", token)
 			if err != nil {
 				log.Println("err:", err)
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				RedirectLogin(w,r)
 				return
 			} else {
 				log.Println("here run")
 				claims := token.PrivateClaims()
 				if claims["userAgent"] != r.UserAgent() {
-					http.Redirect(w, r, "/login", http.StatusSeeOther)
+					RedirectLogin(w,r)
 					return
 				}
 				hashToken := sha512.Sum512([]byte(jwtToken.Value))
@@ -84,7 +85,7 @@ func RefreshTokenMiddleware(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler
 				check, err := database.CheckToken(hashTokenString)
 				if !check {
 					fmt.Println("Token not found:", err)
-					http.Redirect(w, r, "/login", http.StatusSeeOther)
+					RedirectLogin(w,r)
 					return
 				}
 			}
@@ -103,7 +104,7 @@ func AccessTokenMiddleware(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler 
 
 			token, err := jwtauth.VerifyRequest(ja, r, jwtauth.TokenFromHeader)
 			if err != nil {
-				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				RedirectLogin(w,r)
 				return
 			}
 

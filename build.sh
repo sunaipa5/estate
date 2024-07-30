@@ -3,7 +3,7 @@ PROJECT_DIR="."
 RELEASE_DIR="release"
 
 #Create database SQL File
-CREATE_SQL_FILE=false
+CREATE_SQL_FILE=true
 DB_USER=dbadmin
 DB_NAME=estate
 SQL_FILE="estate.sql"

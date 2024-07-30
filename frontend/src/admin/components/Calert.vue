@@ -8,7 +8,7 @@
           width="18"
           height="18"
           class="flr"
-          color="red"
+          color="#991111"
           @click="closeAlert"
           style="position:absolute;top:3px;right:4px;"
         >
@@ -71,6 +71,9 @@ export default {
 }
 .dark .calert{
   background-color: #090909;
+}
+.light .calert{
+  background-color: #fff;
 }
 .falert {
   width: 500px;
