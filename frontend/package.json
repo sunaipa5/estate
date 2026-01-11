@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "@splidejs/vue-splide": "^0.6.12",
-    "axios": "^1.7.4",
-    "vue": "^3.4.21"
+    "axios": "^1.13.2",
+    "vue": "^3.5.26"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "vite": "^5.2.0",
-    "vue-router": "^4.0.13"
+    "@vitejs/plugin-vue": "^6.0.3",
+    "vite": "^7.3.1",
+    "vue-router": "^4.6.4"
   }
 }
